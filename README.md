@@ -1,0 +1,178 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const ShelterManagementApp(),
+    );
+  }
+}
+
+class Shelter {
+  final String name;
+  final String address;
+  final int maxCapacity;
+  int currentCapacity;
+
+  Shelter({
+    required this.name,
+    required this.address,
+    required this.maxCapacity,
+    required this.currentCapacity,
+  });
+
+  bool get isFull => currentCapacity >= maxCapacity;
+}
+
+class ShelterManagementApp extends StatefulWidget {
+  const ShelterManagementApp({super.key});
+
+  @override
+  State<ShelterManagementApp> createState() => _ShelterManagementAppState();
+}
+
+class _ShelterManagementAppState extends State<ShelterManagementApp> {
+  final List<Shelter> shelters = [
+    Shelter(
+      name: "Ginásio Municipal",
+      address: "Rua das Flores, 123 - Centro",
+      maxCapacity: 100,
+      currentCapacity: 80,
+    ),
+    Shelter(
+      name: "Escola Central",
+      address: "Av. Principal, 456 - Centro",
+      maxCapacity: 150,
+      currentCapacity: 150,
+    ),
+    Shelter(
+      name: "Igreja Esperança",
+      address: "Rua da Paz, 789 - Bairro Novo",
+      maxCapacity: 50,
+      currentCapacity: 20,
+    ),
+    Shelter(
+      name: "Clube Comunitário",
+      address: "Av. das Nações, 101 - Bairro Velho",
+      maxCapacity: 75,
+      currentCapacity: 70,
+    ),
+    Shelter(
+      name: "Centro Esportivo",
+      address: "Rua do Sol, 202 - Centro",
+      maxCapacity: 200,
+      currentCapacity: 150,
+    ),
+    Shelter(
+      name: "Escola Modelo",
+      address: "Av. das Palmeiras, 303 - Bairro Verde",
+      maxCapacity: 120,
+      currentCapacity: 100,
+    ),
+    Shelter(
+      name: "Salão Paroquial",
+      address: "Rua da Fé, 404 - Vila Nova",
+      maxCapacity: 60,
+      currentCapacity: 45,
+    ),
+  ];
+
+  void updateCapacity(Shelter shelter, int change) {
+    setState(() {
+      shelter.currentCapacity += change;
+      if (shelter.currentCapacity < 0) {
+        shelter.currentCapacity = 0;
+      } else if (shelter.currentCapacity > shelter.maxCapacity) {
+        shelter.currentCapacity = shelter.maxCapacity;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Gestão de Abrigos"),
+      ),
+      body: ListView.builder(
+        itemCount: shelters.length,
+        itemBuilder: (context, index) {
+          final shelter = shelters[index];
+          return Card(
+            margin: const EdgeInsets.all(10),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    shelter.name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    shelter.address,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Capacidade Máxima: ${shelter.maxCapacity}",
+                          ),
+                          Text(
+                            "Capacidade Atual: ${shelter.currentCapacity}",
+                          ),
+                        ],
+                      ),
+                      Icon(
+                        shelter.isFull
+                            ? Icons.cancel
+                            : Icons.check_circle_outline,
+                        color: shelter.isFull ? Colors.red : Colors.green,
+                        size: 30,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        onPressed: () => updateCapacity(shelter, -1),
+                        icon: const Icon(Icons.remove_circle, color: Colors.red),
+                      ),
+                      IconButton(
+                        onPressed: () => updateCapacity(shelter, 1),
+                        icon: const Icon(Icons.add_circle, color: Colors.green),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}****
